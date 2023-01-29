@@ -1,24 +1,25 @@
 def binaryToDecimal(binNum):
     i = 0
     ans = 0
-    exp = 11
-    frac = 1
+    exp = 12
+    frac = 0
+    expAns = 0
+    fracAns = 0
     while i < len(binNum) :
-        if binNum[0] == '1':
-            ans *= -1
-            i += 1
-        else:
-            i += 1
-        if i < 11:
+        if i <= 11:
+            exp -= 1
             if binNum[i] == '1':
-                ans += pow(2, exp)
-                exp -= 1
-                i += 1      
-        if i >= 12:
-            if binNum[i] == '1':
-                ans += pow(0.5, frac)
+                expAns += pow(2, exp)
                 i += 1
-                frac += 1
+                continue      
+        if i >= 12:
+            frac += 1
+            if binNum[i] == '1':
+                fracAns += pow(0.5, frac)
+                i += 1
+                continue
+        i += 1
+    ans = (pow(2, (expAns - 1023)) * (1 + fracAns))
     return ans
 
 def absoluteError(num1, num2):
@@ -29,14 +30,14 @@ def relativeError(num1, num2):
 
 def babylonainMethod(num):
     error = .0001
-    numIterations = 0
+    numIterations = -1
     diff = 1
     k = 1
     equation = num
     while(diff >= error):
         currVariable = equation
         equation +=(pow(-1, k) * (pow(1, k) / pow(k, 3)))
-        diff = currVariable - equation
+        diff = abs(currVariable - equation)
         numIterations += 1
         k += 1
     return numIterations
@@ -50,7 +51,7 @@ def bisectionMethod(left, right, function):
     if initLeft * initRight >= 0:
         print("Error")
         return
-    error = .001
+    error = .0001
     diff = right - left
     maxIterations = 50
     numIterations = 0
@@ -58,6 +59,7 @@ def bisectionMethod(left, right, function):
         numIterations  += 1
 
         midpoint = (left + right) / 2
+        x = midpoint
         evalMid = eval(function)
         if evalMid == 0.0:
             break
@@ -75,15 +77,15 @@ def bisectionMethod(left, right, function):
 
 def newtonMethod(initValue):
     prev = initValue
-    error = .001
+    error = .0001
     maxIterations = 100
     i = 1
     while(i <= maxIterations):
-        if (3*(pow(prev, 3)) + (8*prev)) != 0:
-            next = prev - ((pow(prev, 3) + 4*(pow(prev, 2) - 10)) / (3*(pow(prev, 3)) + (8*prev)))
+        i += 1
+        if (3*(pow(prev, 2)) + (8*prev)) != 0:
+            next = prev - ((pow(prev, 3) + 4*(pow(prev, 2) - 10)) / (3*(pow(prev, 2)) + (8*prev)))
             if abs(next - prev) < error:
-                return maxIterations
-            i += 1
+                return i
             prev = next
         else:
             print("Error: Derivative is zero")
